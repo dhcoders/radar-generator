@@ -14,7 +14,7 @@ import streamlit as st
 
 st.header("📁 WSL2 WYSCOUT RADAR GENERATOR")
 st.markdown(f"Upload your Wyscout export (Excel or CSV format) and select a position, then player, to generate a radar chart.")
-st.markdown(f"There are no sample tweaking features, so make sure you get your sample right BEFORE importing data & using this tool!")
+st.markdown(f"There are no sample tweaking features, so make sure you get your sample right BEFORE importing data & using this tool.")
 uploaded_file = st.file_uploader(
     "Choose a file",
     type=['xlsx', 'xls', 'csv'],
@@ -105,7 +105,7 @@ POSITION_TEMPLATES = {
            'Progressive runs per 90', 'Defensive duels per 90', 'Interceptions per 90', 'Successful defensive actions per 90', 'xG per 90', 'xA per 90', 'Key passes per 90'],
     
     'WF/AM': ['Goals', 'xG per 90', 'Shots per 90', 'Assists', 'xA per 90', 'Key passes per 90', 
-              'Progressive passes per 90', 'Progressive runs per 90', 'Passes to penalty area per 90'
+              'Progressive passes per 90', 'Progressive runs per 90', 'Passes to penalty area per 90',
               'Dribbles per 90', 'Successful dribbles, %', 'Fouls suffered per 90'],
     
     'CF': ['Goals', 'xG per 90', 'NPG-xG', 'Assists', 'xA per 90', 'Passes to penalty area per 90',
