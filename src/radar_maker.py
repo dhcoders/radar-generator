@@ -93,6 +93,23 @@ def generate_radar(radar_data):
         )
     )
     
+    # Add the AU logo to the center of the radar
+    try:
+        logo_path = Path(__file__).parent / "AULogo.png"
+        
+        if logo_path.exists():
+            # Load the logo as PIL Image
+            logo_image = Image.open(logo_path)
+            
+            # Add the logo to the center of the radar
+            ax_image = add_image(
+                logo_image, fig, left=0.4775, bottom=0.46, width=0.07, height=0.07
+            )
+            
+    except Exception:
+        # Silently continue if logo can't be loaded
+        pass
+    
     # Add title and subtitle with position-specific context
     fig.text(
         0.5, 0.985, f"{player_name.upper()} | {position} Radar", size=15,
