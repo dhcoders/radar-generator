@@ -66,7 +66,7 @@ def generate_radar(radar_data):
             ["#5D688A"] * 3 +  # Light red for attacking
             ["#F7A5A5"] * 3 +  # Yellow for creativity
             ["#FFDBB6"] * 3 +  # Green for progression
-            ["#2C3E50"] * 3    # Blue for defensive
+            ["#6B2C91"] * 3    # Blue for defensive
         )
         text_colors = (
             ["#FFFFFF"] * 3 +
