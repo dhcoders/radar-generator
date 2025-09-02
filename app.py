@@ -11,18 +11,19 @@ import streamlit as st
 from src.wyscout_remapping import wyscout_column_mapping
 
 
-#HANDLING IMPORTING WYSCOUT DATA
+st.header("📁 ANALYTICS UNITED WYSCOUT RADAR GENERATOR")
+st.markdown(f"Upload your Wyscout export (Usually .xlsx format - can also take .csv) and select a position template and find your target player to generate a radar chart.")
+st.markdown(f"There are no sample tweaking features, so make sure you get your sample right BEFORE exporting from wyscout, importing data & using this tool.")
 
-st.header("📁 WSL2 WYSCOUT RADAR GENERATOR")
-st.markdown(f"Upload your Wyscout export (Excel or CSV format) and select a position, then player, to generate a radar chart.")
-st.markdown(f"There are no sample tweaking features, so make sure you get your sample right BEFORE importing data & using this tool.")
+#Using streamlits file uploader to get the file from the user
+
 uploaded_file = st.file_uploader(
     "Choose a file",
     type=['xlsx', 'xls', 'csv'],
     help="Upload a Wyscout export containing player data. Please output ALL AVAILABLE METRICS IF POSSIBLE"
 )
 
-#Turn the uploaded file into a dataframe so we can use it
+#Turn the uploaded file into a dataframe so we can use it. Wyscout exports as EXCEL, but have built in CSV functionality.
 if uploaded_file is not None:
     try:
         if uploaded_file.name.endswith('.csv'):
@@ -32,12 +33,11 @@ if uploaded_file is not None:
         
         st.success("File uploaded successfully!")
         
-        # Apply column remapping to make radar labels more readable
+# Apply column remapping to make radar labels more readable. We're using the wyscout_column_mapping from the wyscout_remapping.py file.
         df = df.rename(columns=wyscout_column_mapping)
-        st.info(f"✅ Column names remapped for better readability")
 
-        #Transforming the dataframe to input new metrics into the df for the radars - BEFORE WE DO THE PERCENITLES
 
+#Transforming the dataframe to input new metrics into the df for the radars - BEFORE ANY PERCENTILE CALCULATIONS
         # EFx Aerial Duels
         df['Aerial Duels Won'] = (df['Aerial Duels'] * df['Aerial Duels Won %']) / 100
         # EFx Ground Duels
@@ -104,7 +104,7 @@ POSITION_TEMPLATES = {
            'Prog. Passes', 'Prog. Pass Acc. %', 'Prog. Carries', 'Dribble Succ. %'],
     
     'FB': ['Shorter Pass Acc. %', 'Prog. Passes', 'Prog. Pass Acc. %', 'Prog. Carries', 'Dribble', 'Dribble Succ. %',
-           'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Assists', 'xA', 'Shots Created'],
+           'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Total Assists', 'xA', 'Shots Created'],
     
     '#6': ['Passes', 'Pass Acc. %', 'Dribble Succ. %', 'Prog. Passes', 'Prog. Pass Acc. %',
            'Prog. Carries', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Fouls'],
@@ -112,11 +112,11 @@ POSITION_TEMPLATES = {
     '#8': ['Passes', 'Pass Acc. %', 'Dribble Succ. %', 'Prog. Passes', 'Prog. Pass Acc. %',
            'Prog. Carries', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'xG', 'xA', 'Shots Created'],
     
-    'WF/AM': ['Goals', 'xG', 'Shots', 'Assists', 'xA', 'Shots Created', 
+    'WF/AM': ['Total Goals', 'xG', 'Shots', 'Total Assists', 'xA', 'Shots Created', 
               'Prog. Passes', 'Prog. Carries', 'Passes to PA',
               'Dribble', 'Dribble Succ. %', 'Fouls Drawn'],
     
-    'CF': ['Goals', 'xG', 'NPG-xG', 'Assists', 'xA', 'Passes to PA',
+    'CF': ['Total Goals', 'xG', 'NPG-xG', 'Total Assists', 'xA', 'Passes to PA',
            'Long Passes Received', 'Aerial Duels Won', 'Dribble Succ. %', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions'],
 }
 
