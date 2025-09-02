@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from mplsoccer import PyPizza, add_image, FontManager
 import streamlit as st
+from src.wyscout_remapping import wyscout_column_mapping
 
 
 #HANDLING IMPORTING WYSCOUT DATA
@@ -30,28 +31,35 @@ if uploaded_file is not None:
             df = pd.read_excel(uploaded_file)
         
         st.success("File uploaded successfully!")
+        
+        # Apply column remapping to make radar labels more readable
+        df = df.rename(columns=wyscout_column_mapping)
+        st.info(f"✅ Column names remapped for better readability")
 
         #Transforming the dataframe to input new metrics into the df for the radars - BEFORE WE DO THE PERCENITLES
 
-            # EFx Aerial Duels
-        df['Aerial Duels Won'] = (df['Aerial duels per 90'] * df['Aerial duels won, %']) / 100
+        # EFx Aerial Duels
+        df['Aerial Duels Won'] = (df['Aerial Duels'] * df['Aerial Duels Won %']) / 100
         # EFx Ground Duels
-        df['Ground Duels Won'] = (df['Defensive duels per 90'] * df['Defensive duels won, %']) / 100
+        df['Ground Duels Won'] = (df['Ground Duels'] * df['Ground Duels Won %']) / 100
         # EFx Duels - Essentially total duels won.
         df['Total Duels Won'] = (df['Ground Duels Won'] + df['Aerial Duels Won'])
         # Total Duel %
-        df['Total Duel %'] = (df['Aerial duels won, %'] + df['Defensive duels won, %']) / 2
+        df['Total Duel %'] = (df['Aerial Duels Won %'] + df['Ground Duels Won %']) / 2
         #Total Duels per 90
-        df['Duels Contested'] = df['Aerial duels per 90'] + df['Defensive duels per 90']
+        df['Duels Contested'] = df['Aerial Duels'] + df['Ground Duels']
         # EFx Prog. Pass
-        df['EFx Prog. Pass'] = (df['Progressive passes per 90'] * df['Accurate progressive passes, %']) / 100
+        df['EFx Prog. Pass'] = (df['Prog. Passes'] * df['Prog. Pass Acc. %']) / 100
         #xG per Shot
-        df['xG per Shot'] = df['xG per 90'] / df['Shots per 90']
+        df['xG per Shot'] = df['xG'] / df['Shots']
         #Finishing 
-        df['NPG-xG'] = df['Non-penalty goals'] - df['xG']
+        df['NPG-xG'] = df['Total Non-Pen. Goals'] - df['Total xG']
+
+    
+
 
         # Calculate percentiles for ALL numeric columns NOW, then we can grab them for the radar later
-        lower_is_better = ['Dispossessed', 'Yellow cards', 'Red cards']  # If having a metric lower is preferable, this list signals that so later code can invert the percentile
+        lower_is_better = ['Dispossessed', 'Yellow cards', 'Red cards', 'Fouls']  # If having a metric lower is preferable, this list signals that so later code can invert the percentile
         numeric_columns = df.select_dtypes(include=[np.number]).columns
         
         #Code for calculating percentile ranks across the data.
@@ -92,24 +100,24 @@ if uploaded_file is not None:
 
 #This is the list of metrics that will be used to generate the radar.
 POSITION_TEMPLATES = {
-    'CB': ['Successful defensive actions per 90', 'Shots blocked per 90', 'Interceptions per 90','Fouls per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'Defensive duels per 90', 'Aerial duels per 90', 
-           'Progressive passes per 90', 'Accurate progressive passes, %', 'Progressive runs per 90', 'Successful dribbles, %'],
+    'CB': ['Succ. Def. Actions', 'Shot Blocked', 'Interceptions','Fouls', 'Ground Duels Won %', 'Aerial Duels Won %', 'Ground Duels', 'Aerial Duels', 
+           'Prog. Passes', 'Prog. Pass Acc. %', 'Prog. Carries', 'Dribble Succ. %'],
     
-    'FB': ['Accurate short / medium passes, %', 'Progressive passes per 90', 'Accurate progressive passes, %', 'Progressive runs per 90', 'Dribbles per 90', 'Successful dribbles, %',
-           'Successful defensive actions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'Assists', 'xA per 90', 'Key passes per 90'],
+    'FB': ['Shorter Pass Acc. %', 'Prog. Passes', 'Prog. Pass Acc. %', 'Prog. Carries', 'Dribble', 'Dribble Succ. %',
+           'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Assists', 'xA', 'Shots Created'],
     
-    '#6': ['Passes per 90', 'Accurate passes, %', 'Successful dribbles, %', 'Progressive passes per 90', 'Accurate progressive passes, %',
-           'Progressive runs per 90', 'Defensive duels per 90', 'Interceptions per 90', 'Successful defensive actions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'Fouls per 90'],
+    '#6': ['Passes', 'Pass Acc. %', 'Dribble Succ. %', 'Prog. Passes', 'Prog. Pass Acc. %',
+           'Prog. Carries', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Fouls'],
     
-    '#8': ['Passes per 90', 'Accurate passes, %', 'Successful dribbles, %', 'Progressive passes per 90', 'Accurate progressive passes, %',
-           'Progressive runs per 90', 'Defensive duels per 90', 'Interceptions per 90', 'Successful defensive actions per 90', 'xG per 90', 'xA per 90', 'Key passes per 90'],
+    '#8': ['Passes', 'Pass Acc. %', 'Dribble Succ. %', 'Prog. Passes', 'Prog. Pass Acc. %',
+           'Prog. Carries', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'xG', 'xA', 'Shots Created'],
     
-    'WF/AM': ['Goals', 'xG per 90', 'Shots per 90', 'Assists', 'xA per 90', 'Key passes per 90', 
-              'Progressive passes per 90', 'Progressive runs per 90', 'Passes to penalty area per 90',
-              'Dribbles per 90', 'Successful dribbles, %', 'Fouls suffered per 90'],
+    'WF/AM': ['Goals', 'xG', 'Shots', 'Assists', 'xA', 'Shots Created', 
+              'Prog. Passes', 'Prog. Carries', 'Passes to PA',
+              'Dribble', 'Dribble Succ. %', 'Fouls Drawn'],
     
-    'CF': ['Goals', 'xG per 90', 'NPG-xG', 'Assists', 'xA per 90', 'Passes to penalty area per 90',
-           'Received long passes per 90', 'Aerial Duels Won', 'Successful dribbles, %', 'Defensive duels per 90', 'Interceptions per 90', 'Successful defensive actions per 90'],
+    'CF': ['Goals', 'xG', 'NPG-xG', 'Assists', 'xA', 'Passes to PA',
+           'Long Passes Received', 'Aerial Duels Won', 'Dribble Succ. %', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions'],
 }
 
 selected_template = st.selectbox("Choose radar type:", POSITION_TEMPLATES.keys())

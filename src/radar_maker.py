@@ -80,7 +80,7 @@ def generate_radar(radar_data):
             edgecolor="#000000", zorder=2, linewidth= 2
         ),
         kwargs_params=dict(
-            color="#000000", fontsize=7.5,
+            color="#000000", fontsize=9,
             va="center", fontweight="bold"
         ),
         kwargs_values=dict(
@@ -102,13 +102,18 @@ def generate_radar(radar_data):
             logo_image = Image.open(logo_path)
             
             # Add the logo to the center of the radar
-            ax_image = add_image(
-                logo_image, fig, left=0.4775, bottom=0.46, width=0.07, height=0.07
+            add_image(
+                logo_image, fig, left=0.4775, bottom=0.46, width=0.07, height=0.07,
+                alpha=1
             )
             
-    except Exception:
-        # Silently continue if logo can't be loaded
-        pass
+    except Exception as e:
+        # Show error for debugging
+        try:
+            import streamlit as st
+            st.error(f"Logo loading error: {e}")
+        except:
+            print(f"Error loading logo: {e}")
     
     # Add title and subtitle with position-specific context
     fig.text(
@@ -136,6 +141,8 @@ def generate_radar(radar_data):
         0.5, 0.95, subtitle, size=10,
         color="#000000", ha="center", va="center", fontweight="bold"
     )
+    
+
     
     return fig
 
