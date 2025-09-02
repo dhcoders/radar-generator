@@ -117,30 +117,44 @@ def generate_radar(radar_data):
     
     # Add title and subtitle with position-specific context
     fig.text(
-        0.5, 0.985, f"{player_name.upper()} | {position} Radar", size=15,
+        0.5, 0.985, f"{player_name.upper()} | {position} TEMPLATE", size=15,
         color="#000000", ha="center", va="center", fontweight="bold"
     )
 
-    # Position-specific subtitle
+    # Position-specific subtitle with color-coded categories
     if position == 'CB':
-        subtitle = f"DEFENDING • DUELLING • BALL PLAYING"
-    elif position == 'FB':
-        subtitle = f"PASSING • CARRYING • DEFENDING • CREATIVITY"
-    elif position == '#6':
-        subtitle = f"BALL SECURITY • PROGRESSION • DEF. ACTIVITY • DUEL SUCCESS"
-    elif position == '#8':
-        subtitle = f" BALL SECURITY • PROGRESSION • DEFENSIVE • CREATIVITY"
-    elif position == 'WF/AM':
-        subtitle = f"GOALSCORING • CREATIVITY • PENETRATION • DRIBBLING"
-    elif position == 'CF':
-        subtitle = f"GOALSCORING • CREATIVITY • OUTLET • PRESSING"
+        # CB has 3 groups of 4 metrics each with different colors
+        fig.text(0.5, 0.95, "DEFENDING", size=10, color="#5D688A", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
+        fig.text(0.5, 0.935, "•", size=10, color="#000000", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
+        fig.text(0.5, 0.92, "DUELLING", size=10, color="#F7A5A5", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
+        fig.text(0.5, 0.905, "•", size=10, color="#000000", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
+        fig.text(0.5, 0.89, "BALL PLAYING", size=10, color="#FFDBB6", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
     else:
-        subtitle = f"POSITION: {position} | PERCENTILES"
-    
-    fig.text(
-        0.5, 0.95, subtitle, size=10,
-        color="#000000", ha="center", va="center", fontweight="bold"
-    )
+        # All other positions: 4 groups of 3 metrics each
+        if position == 'FB':
+            categories = ["PASSING", "CARRYING", "DEFENDING", "CREATIVITY"]
+        elif position == '#6':
+            categories = ["BALL SECURITY", "PROGRESSION", "DEF. ACTIVITY", "DUEL SUCCESS"]
+        elif position == '#8':
+            categories = ["BALL SECURITY", "PROGRESSION", "DEFENSIVE", "CREATIVITY"]
+        elif position == 'WF/AM':
+            categories = ["GOALSCORING", "CREATIVITY", "PENETRATION", "DRIBBLING"]
+        elif position == 'CF':
+            categories = ["GOALSCORING", "CREATIVITY", "OUTLET", "PRESSING"]
+        else:
+            categories = [f"POSITION: {position}", "PERCENTILES", "", ""]
+        
+        colors = ["#5D688A", "#F7A5A5", "#FFDBB6", "#FFF2EF"]
+        
+        # Create colored text for each category
+        y_positions = [0.95, 0.935, 0.92, 0.905]
+        for i, (category, color) in enumerate(zip(categories, colors)):
+            if category:  # Only add non-empty categories
+                fig.text(0.5, y_positions[i], category, size=10, color=color, 
+                        ha="center", va="center", fontweight="bold", transform=fig.transFigure)
+                if i < len(categories) - 1 and categories[i+1]:  # Add separator if not last
+                    fig.text(0.5, y_positions[i] - 0.007, "•", size=10, color="#000000", 
+                            ha="center", va="center", fontweight="bold", transform=fig.transFigure)
     
 
     
