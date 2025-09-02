@@ -40,6 +40,7 @@ def generate_radar(radar_data):
     position = radar_data['position']
     params = radar_data['params']
     percentiles = radar_data['percentiles']
+    sample_info = radar_data.get('sample_info', None)
     
     # Position-specific color schemes based on metric groupings
     if position == 'CB':
@@ -86,10 +87,10 @@ def generate_radar(radar_data):
         inner_circle_size=13,
     )
     
-    # Generate the pizza plot
+    # Generate the pizza plot - moved down to make space for title/categories
     fig, ax = baker.make_pizza(
         percentiles,  # Use percentiles for radar visualization
-        figsize=(8, 8),  # Adjusted for better Streamlit display
+        figsize=(8, 8.5),  # Slightly taller figure to accommodate text
         slice_colors=slice_colors,
         value_colors=text_colors,
         value_bck_colors=slice_colors,
@@ -112,6 +113,9 @@ def generate_radar(radar_data):
         )
     )
     
+    # Move the radar plot down to make space for text
+    ax.set_position([0.1, 0.05, 0.8, 0.75])  # [left, bottom, width, height] - moved radar down
+    
     # Add the AU logo to the center of the radar
     try:
         logo_path = Path(__file__).parent / "AULogo.png"
@@ -120,9 +124,9 @@ def generate_radar(radar_data):
             # Load the logo as PIL Image
             logo_image = Image.open(logo_path)
             
-            # Add the logo to the center of the radar
+            # Add the logo to the center of the radar (adjusted for moved radar position)
             add_image(
-                logo_image, fig, left=0.4775, bottom=0.46, width=0.07, height=0.07,
+                logo_image, fig, left=0.46525, bottom=0.39, width=0.07, height=0.07,
                 alpha=1
             )
             
@@ -134,33 +138,49 @@ def generate_radar(radar_data):
         except:
             print(f"Error loading logo: {e}")
     
-    # Add title and subtitle with position-specific context
+    # Add title and subtitle with position-specific context (now with more space above radar)
+    title_y = 0.95
+    sample_y = 0.915
+    categories_y = 0.88
+    
+    # Main title
     fig.text(
-        0.5, 0.985, f"{player_name.upper()} | {position} TEMPLATE", size=25,
+        0.5, title_y, f"{player_name.upper()} | {position} TEMPLATE", size=25,
         color="#000000", ha="center", va="center", fontproperties=font_bold.prop
     )
-
+    
+    # Sample info (if provided)
+    if sample_info:
+        fig.text(
+            0.5, sample_y, sample_info, size=16,
+            color="#000000", ha="center", va="center", fontproperties=font_bold.prop
+        )
+        # Adjust categories position down if sample info is present
+        categories_y = 0.88
+    
     # Position-specific subtitle with color-coded categories (horizontal layout)
     if position == 'CB':
         # CB has 3 groups of 4 metrics each with different colors
-        # Calculate positions for horizontal layout
-        categories = ["DEFENDING", "DUELLING", "BALL PLAYING"]
+        categories = ["DEFENDING", "DUELLING", "BALL-PLAYING"]
         colors = ["#5D688A", "#F7A5A5", "#FFDBB6"]
         
-        # Create horizontal layout - tighter spacing for CB
-        x_positions = [0.35, 0.5, 0.68]  # Tighter spacing for 3 categories
+        # Calculate evenly spaced positions for 3 categories
+        total_width = 0.4  # Reduced width for tighter spacing
+        start_x = 0.5 - (total_width / 2)  # Start position (centered)
+        spacing = total_width / (len(categories) - 1) if len(categories) > 1 else 0
         
         for i, (category, color) in enumerate(zip(categories, colors)):
-            fig.text(x_positions[i], 0.95, category, size=14, color=color, 
+            x_pos = start_x + (i * spacing)
+            fig.text(x_pos, categories_y, category, size=14, color=color, 
                     ha="center", va="center", fontproperties=font_bold.prop, transform=fig.transFigure)
     else:
         # All other positions: 4 groups of 3 metrics each
         if position == 'FB':
             categories = ["PASSING", "CARRYING", "DEFENDING", "CREATIVITY"]
         elif position == '#6':
-            categories = ["BALL SEC.", "PROG.", "DEFENDING", "DUELS"]
+            categories = ["SECURITY", "PROGRESSION", "DEFENDING", "DUELLING"]
         elif position == '#8':
-            categories = ["BALL SEC.", "PROG.", "DEFENDING", "CREATIVITY"]
+            categories = ["SECURITY", "PROGRESSION", "DEFENDING", "CREATIVITY"]
         elif position == 'WF/AM':
             categories = ["GOALSCORING", "CREATIVITY", "PENETRATION", "DRIBBLING"]
         elif position == 'CF':
@@ -170,12 +190,15 @@ def generate_radar(radar_data):
         
         colors = ["#5D688A", "#F7A5A5", "#FFDBB6", "#6B2C91"]
         
-        # Create horizontal layout for 4 categories - tighter spacing
-        x_positions = [0.25, 0.42, 0.58, 0.75]  # Tighter spacing for 4 categories
+        # Calculate evenly spaced positions for 4 categories
+        total_width = 0.5  # Reduced width for tighter spacing
+        start_x = 0.5 - (total_width / 2)  # Start position (centered)
+        spacing = total_width / (len(categories) - 1) if len(categories) > 1 else 0
         
         for i, (category, color) in enumerate(zip(categories, colors)):
             if category:  # Only add non-empty categories
-                fig.text(x_positions[i], 0.95, category, size=14, color=color, 
+                x_pos = start_x + (i * spacing)
+                fig.text(x_pos, categories_y, category, size=14, color=color, 
                         ha="center", va="center", fontproperties=font_bold.prop, transform=fig.transFigure)
     return fig
 
