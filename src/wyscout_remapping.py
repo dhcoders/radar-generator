@@ -74,7 +74,7 @@ wyscout_column_mapping = {
     'Crosses to goalie box per 90': 'Crosses to PA',
     
     # Dribbling & Ball Carrying
-    'Dribbles per 90': 'Dribble',
+    'Dribbles per 90': 'Dribbles',
     'Successful dribbles, %': 'Dribble Succ. %',
     'Offensive duels per 90': 'Offensive Duels',
     'Offensive duels won, %': 'Offensive Duels Won %',
