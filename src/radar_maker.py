@@ -83,7 +83,7 @@ def generate_radar(radar_data):
         last_circle_lw=4,
         other_circle_lw=1,
         other_circle_color="#E0E0E0",
-        inner_circle_size=10,
+        inner_circle_size=13,
     )
     
     # Generate the pizza plot
@@ -93,12 +93,13 @@ def generate_radar(radar_data):
         slice_colors=slice_colors,
         value_colors=text_colors,
         value_bck_colors=slice_colors,
-        blank_alpha=0.4,
+        blank_alpha=0.8,
+        param_location=112,
         kwargs_slices=dict(
             edgecolor="#000000", zorder=2, linewidth= 2
         ),
         kwargs_params=dict(
-            color="#000000", fontsize=12,
+            color="#000000", fontsize=13,
             va="center", fontproperties=font_bold.prop
         ),
         kwargs_values=dict(
@@ -157,13 +158,13 @@ def generate_radar(radar_data):
         if position == 'FB':
             categories = ["PASSING", "CARRYING", "DEFENDING", "CREATIVITY"]
         elif position == '#6':
-            categories = ["BALL SEC.", "PROGRESSION", "DEF. ACTIVITY", "DUEL SUCCESS"]
+            categories = ["BALL SEC.", "PROG.", "DEFENDING", "DUELS"]
         elif position == '#8':
-            categories = ["BALL SEC.", "PROGRESSION", "DEFENSIVE", "CREATIVITY"]
+            categories = ["BALL SEC.", "PROG.", "DEFENDING", "CREATIVITY"]
         elif position == 'WF/AM':
             categories = ["GOALSCORING", "CREATIVITY", "PENETRATION", "DRIBBLING"]
         elif position == 'CF':
-            categories = ["GOALSCORING", "CREATIVITY", "OUTLET", "PRESSING"]
+            categories = ["GOALS", "CREATIVITY", "OUTLET", "PRESSING"]
         else:
             categories = [f"POSITION: {position}", "PERCENTILES", "", ""]
         
