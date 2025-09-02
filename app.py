@@ -124,6 +124,14 @@ POSITION_TEMPLATES = {
 selected_template = st.selectbox("Choose radar type:", POSITION_TEMPLATES.keys())
 params = POSITION_TEMPLATES[selected_template]
 
+# Sample information input
+st.markdown("### 📊 Sample Information")
+sample_info = st.text_input(
+    "Enter sample information (optional):",
+    placeholder="e.g., West Ham | Premier League 2023/24 | Minimum 900 minutes",
+    help="This will appear below the player name and above the categories on your radar chart"
+)
+
 # Combined Step 4 & 5: Extract data AND generate radar in one click
 if uploaded_file is not None and 'selected_player' in locals():
     if st.button("🚀 Generate Radar Chart", type="primary"):
@@ -163,7 +171,8 @@ if uploaded_file is not None and 'selected_player' in locals():
                     'params': param_names,
                     'values': values,
                     'percentiles': percentiles,
-                    'player_data': player_data
+                    'player_data': player_data,
+                    'sample_info': sample_info if sample_info else None
                 }
                 
                 # Import and generate radar
