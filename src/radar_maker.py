@@ -20,6 +20,21 @@ def generate_radar(radar_data):
         matplotlib.figure.Figure: The generated radar chart figure
     """
     
+    # Load custom fonts
+    font_normal = FontManager('https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true')
+    font_bold = FontManager('https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Bold.ttf?raw=true')
+    
+    # Try to load local Alte Haas Grotesk fonts
+    try:
+        font_path_regular = Path(__file__).parent.parent / "fonts" / "AlteHaasGroteskRegular.ttf"
+        font_path_bold = Path(__file__).parent.parent / "fonts" / "AlteHaasGroteskBold.ttf"
+        
+        if font_path_regular.exists() and font_path_bold.exists():
+            font_normal = FontManager(str(font_path_regular))
+            font_bold = FontManager(str(font_path_bold))
+    except Exception as e:
+        print(f"Could not load custom fonts, using defaults: {e}")
+    
     # Extract data from the radar_data dictionary
     player_name = radar_data['player_name']
     position = radar_data['position']
@@ -38,7 +53,8 @@ def generate_radar(radar_data):
             ["#FFDBB6"] * 4    # Green for progressive play
         )
         text_colors = (
-            ["#000000"] * 12   # Black text on green
+            ["#FFFFFF"] * 4 +
+            ["#000000"] * 8   # Black text on green
         )
     else:
         # All other positions: 4 groups of 3 metrics each
@@ -50,10 +66,12 @@ def generate_radar(radar_data):
             ["#5D688A"] * 3 +  # Light red for attacking
             ["#F7A5A5"] * 3 +  # Yellow for creativity
             ["#FFDBB6"] * 3 +  # Green for progression
-            ["#FFF2EF"] * 3    # Blue for defensive
+            ["#2C3E50"] * 3    # Blue for defensive
         )
         text_colors = (
-            ["#000000"] * 12
+            ["#FFFFFF"] * 3 +
+            ["#000000"] * 6 +
+            ["#FFFFFF"] * 3
         )
     
     # Create the radar chart
@@ -80,12 +98,12 @@ def generate_radar(radar_data):
             edgecolor="#000000", zorder=2, linewidth= 2
         ),
         kwargs_params=dict(
-            color="#000000", fontsize=9,
-            va="center", fontweight="bold"
+            color="#000000", fontsize=12,
+            va="center", fontproperties=font_bold.prop
         ),
         kwargs_values=dict(
-            color="#000000", fontsize=8,
-            zorder=3, fontweight="bold",
+            color="#000000", fontsize=12,
+            zorder=3, fontproperties=font_bold.prop,
             bbox=dict(
                 edgecolor="#000000", facecolor="cornflowerblue",
                 boxstyle="round,pad=0.2", lw=1
@@ -117,18 +135,23 @@ def generate_radar(radar_data):
     
     # Add title and subtitle with position-specific context
     fig.text(
-        0.5, 0.985, f"{player_name.upper()} | {position} TEMPLATE", size=15,
-        color="#000000", ha="center", va="center", fontweight="bold"
+        0.5, 0.985, f"{player_name.upper()} | {position} TEMPLATE", size=25,
+        color="#000000", ha="center", va="center", fontproperties=font_bold.prop
     )
 
-    # Position-specific subtitle with color-coded categories
+    # Position-specific subtitle with color-coded categories (horizontal layout)
     if position == 'CB':
         # CB has 3 groups of 4 metrics each with different colors
-        fig.text(0.5, 0.95, "DEFENDING", size=10, color="#5D688A", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
-        fig.text(0.5, 0.935, "•", size=10, color="#000000", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
-        fig.text(0.5, 0.92, "DUELLING", size=10, color="#F7A5A5", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
-        fig.text(0.5, 0.905, "•", size=10, color="#000000", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
-        fig.text(0.5, 0.89, "BALL PLAYING", size=10, color="#FFDBB6", ha="center", va="center", fontweight="bold", transform=fig.transFigure)
+        # Calculate positions for horizontal layout
+        categories = ["DEFENDING", "DUELLING", "BALL PLAYING"]
+        colors = ["#5D688A", "#F7A5A5", "#FFDBB6"]
+        
+        # Create horizontal layout - tighter spacing for CB
+        x_positions = [0.35, 0.5, 0.68]  # Tighter spacing for 3 categories
+        
+        for i, (category, color) in enumerate(zip(categories, colors)):
+            fig.text(x_positions[i], 0.95, category, size=14, color=color, 
+                    ha="center", va="center", fontproperties=font_bold.prop, transform=fig.transFigure)
     else:
         # All other positions: 4 groups of 3 metrics each
         if position == 'FB':
@@ -144,20 +167,15 @@ def generate_radar(radar_data):
         else:
             categories = [f"POSITION: {position}", "PERCENTILES", "", ""]
         
-        colors = ["#5D688A", "#F7A5A5", "#FFDBB6", "#FFF2EF"]
+        colors = ["#5D688A", "#F7A5A5", "#FFDBB6", "#2C3E50"]
         
-        # Create colored text for each category
-        y_positions = [0.95, 0.935, 0.92, 0.905]
+        # Create horizontal layout for 4 categories - tighter spacing
+        x_positions = [0.25, 0.42, 0.58, 0.75]  # Tighter spacing for 4 categories
+        
         for i, (category, color) in enumerate(zip(categories, colors)):
             if category:  # Only add non-empty categories
-                fig.text(0.5, y_positions[i], category, size=10, color=color, 
-                        ha="center", va="center", fontweight="bold", transform=fig.transFigure)
-                if i < len(categories) - 1 and categories[i+1]:  # Add separator if not last
-                    fig.text(0.5, y_positions[i] - 0.007, "•", size=10, color="#000000", 
-                            ha="center", va="center", fontweight="bold", transform=fig.transFigure)
-    
-
-    
+                fig.text(x_positions[i], 0.95, category, size=14, color=color, 
+                        ha="center", va="center", fontproperties=font_bold.prop, transform=fig.transFigure)
     return fig
 
 
