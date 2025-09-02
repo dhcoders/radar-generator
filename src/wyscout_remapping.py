@@ -31,9 +31,9 @@ wyscout_column_mapping = {
     
     # Defensive Actions
     'Successful defensive actions per 90': 'Succ. Def. Actions',
-    'Defensive duels per 90': 'Ground Duels',
+    'Defensive duels per 90': 'Att. Ground Duels',
     'Defensive duels won, %': 'Ground Duels Won %',
-    'Aerial duels per 90': 'Aerial Duels',
+    'Aerial duels per 90': 'Att. Aerial Duels',
     'Aerial duels won, %': 'Aerial Duels Won %',
     'Sliding tackles per 90': 'Slide Tackles',
     'PAdj Sliding tackles': 'PAdj Sliding Tackles',

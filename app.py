@@ -33,21 +33,22 @@ if uploaded_file is not None:
         
         st.success("File uploaded successfully!")
         
-# Apply column remapping to make radar labels more readable. We're using the wyscout_column_mapping from the wyscout_remapping.py file.
+# Apply column remapping to make radar labels more readable
         df = df.rename(columns=wyscout_column_mapping)
+        st.info(f"✅ Column names remapped for better readability")
 
 
 #Transforming the dataframe to input new metrics into the df for the radars - BEFORE ANY PERCENTILE CALCULATIONS
         # EFx Aerial Duels
-        df['Aerial Duels Won'] = (df['Aerial Duels'] * df['Aerial Duels Won %']) / 100
+        df['Aerial Duels Won'] = (df['Att. Aerial Duels'] * df['Aerial Duels Won %']) / 100
         # EFx Ground Duels
-        df['Ground Duels Won'] = (df['Ground Duels'] * df['Ground Duels Won %']) / 100
+        df['Ground Duels Won'] = (df['Att. Ground Duels'] * df['Ground Duels Won %']) / 100
         # EFx Duels - Essentially total duels won.
         df['Total Duels Won'] = (df['Ground Duels Won'] + df['Aerial Duels Won'])
         # Total Duel %
         df['Total Duel %'] = (df['Aerial Duels Won %'] + df['Ground Duels Won %']) / 2
         #Total Duels per 90
-        df['Duels Contested'] = df['Aerial Duels'] + df['Ground Duels']
+        df['Duels Contested'] = df['Att. Aerial Duels'] + df['Att. Ground Duels']
         # EFx Prog. Pass
         df['EFx Prog. Pass'] = (df['Prog. Passes'] * df['Prog. Pass Acc. %']) / 100
         #xG per Shot
@@ -100,24 +101,24 @@ if uploaded_file is not None:
 
 #This is the list of metrics that will be used to generate the radar.
 POSITION_TEMPLATES = {
-    'CB': ['Succ. Def. Actions', 'Shot Blocked', 'Interceptions','Fouls', 'Ground Duels Won %', 'Aerial Duels Won %', 'Ground Duels', 'Aerial Duels', 
+    'CB': ['Succ. Def. Actions', 'Shot Blocked', 'Interceptions','Fouls', 'Ground Duels Won %', 'Aerial Duels Won %', 'Att. Ground Duels', 'Att. Aerial Duels', 
            'Prog. Passes', 'Prog. Pass Acc. %', 'Prog. Carries', 'Dribble Succ. %'],
     
     'FB': ['Shorter Pass Acc. %', 'Prog. Passes', 'Prog. Pass Acc. %', 'Prog. Carries', 'Dribble', 'Dribble Succ. %',
            'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Total Assists', 'xA', 'Shots Created'],
     
     '#6': ['Passes', 'Pass Acc. %', 'Dribble Succ. %', 'Prog. Passes', 'Prog. Pass Acc. %',
-           'Prog. Carries', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Fouls'],
+           'Prog. Carries', 'Att. Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'Ground Duels Won %', 'Aerial Duels Won %', 'Fouls'],
     
     '#8': ['Passes', 'Pass Acc. %', 'Dribble Succ. %', 'Prog. Passes', 'Prog. Pass Acc. %',
-           'Prog. Carries', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'xG', 'xA', 'Shots Created'],
+           'Prog. Carries', 'Att. Ground Duels', 'Interceptions', 'Succ. Def. Actions', 'xG', 'xA', 'Shots Created'],
     
     'WF/AM': ['Total Goals', 'xG', 'Shots', 'Total Assists', 'xA', 'Shots Created', 
               'Prog. Passes', 'Prog. Carries', 'Passes to PA',
               'Dribble', 'Dribble Succ. %', 'Fouls Drawn'],
     
     'CF': ['Total Goals', 'xG', 'NPG-xG', 'Total Assists', 'xA', 'Passes to PA',
-           'Long Passes Received', 'Aerial Duels Won', 'Dribble Succ. %', 'Ground Duels', 'Interceptions', 'Succ. Def. Actions'],
+           'Long Passes Received', 'Att. Aerial Duels', 'Dribble Succ. %', 'Att. Ground Duels', 'Interceptions', 'Succ. Def. Actions'],
 }
 
 selected_template = st.selectbox("Choose radar type:", POSITION_TEMPLATES.keys())
