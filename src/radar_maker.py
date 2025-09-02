@@ -157,9 +157,9 @@ def generate_radar(radar_data):
         if position == 'FB':
             categories = ["PASSING", "CARRYING", "DEFENDING", "CREATIVITY"]
         elif position == '#6':
-            categories = ["BALL SECURITY", "PROGRESSION", "DEF. ACTIVITY", "DUEL SUCCESS"]
+            categories = ["BALL SEC.", "PROGRESSION", "DEF. ACTIVITY", "DUEL SUCCESS"]
         elif position == '#8':
-            categories = ["BALL SECURITY", "PROGRESSION", "DEFENSIVE", "CREATIVITY"]
+            categories = ["BALL SEC.", "PROGRESSION", "DEFENSIVE", "CREATIVITY"]
         elif position == 'WF/AM':
             categories = ["GOALSCORING", "CREATIVITY", "PENETRATION", "DRIBBLING"]
         elif position == 'CF':
@@ -167,7 +167,7 @@ def generate_radar(radar_data):
         else:
             categories = [f"POSITION: {position}", "PERCENTILES", "", ""]
         
-        colors = ["#5D688A", "#F7A5A5", "#FFDBB6", "#2C3E50"]
+        colors = ["#5D688A", "#F7A5A5", "#FFDBB6", "#6B2C91"]
         
         # Create horizontal layout for 4 categories - tighter spacing
         x_positions = [0.25, 0.42, 0.58, 0.75]  # Tighter spacing for 4 categories
