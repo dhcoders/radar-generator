@@ -80,11 +80,11 @@ def generate_radar(radar_data):
         params=params,
         background_color="#FFFFFF",
         straight_line_color="#000000",
-        straight_line_lw=2,
-        last_circle_lw=4,
+        straight_line_lw=0,
+        last_circle_lw=1.5,
         other_circle_lw=1,
         other_circle_color="#E0E0E0",
-        inner_circle_size=13,
+        inner_circle_size=15,
     )
     
     # Generate the pizza plot - moved down to make space for title/categories
@@ -104,7 +104,7 @@ def generate_radar(radar_data):
             va="center", fontproperties=font_bold.prop
         ),
         kwargs_values=dict(
-            color="#000000", fontsize=12,
+            color="#000000", fontsize=11,
             zorder=3, fontproperties=font_bold.prop,
             bbox=dict(
                 edgecolor="#000000", facecolor="cornflowerblue",
