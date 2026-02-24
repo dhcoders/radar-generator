@@ -11,11 +11,11 @@ wyscout_column_mapping = {
     'Matches played': 'Matches played',
     'Minutes played': 'Minutes played',
     
-    # Goals & Assists
-    'Goals': 'Total Goals',
-    'xG': 'Total xG',
-    'Assists': 'Total Assists',
-    'xA': 'Total xA',
+    # Goals & Assists - keep original names for new dataset
+    # 'Goals': 'Goals',    # No remapping needed
+    # 'xG': 'xG',          # No remapping needed  
+    # 'Assists': 'Assists', # No remapping needed
+    # 'xA': 'xA',          # No remapping needed
     
     # Duels
     'Duels per 90': 'Combined Duels',
@@ -57,9 +57,8 @@ wyscout_column_mapping = {
     'Head goals': 'Total Headed Goals',
     'Head goals per 90': 'Headed Goals',
     
-    # Shooting
-    'Shots': 'Total Shots',
-    'Shots per 90': 'Shots',
+    # Shooting - keep original names for new dataset
+    # 'Shots': 'Shots',  # No remapping needed
     'Shots on target, %': 'Shots on Target %',
     'Goal conversion, %': 'Goal Conversion %',
     
